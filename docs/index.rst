@@ -73,7 +73,7 @@ Setup
         
     } elseif ($request->get('code')) {
         
-        // compare states
+        // (optional) compare states
         if ($request->get('state') !== $session->get('state')) {
             throw new \Exception('states do not match');
         }
@@ -91,7 +91,7 @@ Setup
             'administration:write',
         ];
         
-        // optional state
+        // (optional) generate a state param
         $state = bin2hex(random_bytes(16));
         
         $session->set('state', $state);
