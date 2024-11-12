@@ -73,7 +73,7 @@ Setup
         
     } elseif ($request->get('code')) {
         
-        // compare state
+        // compare states
         if ($request->get('state') !== $session->get('state')) {
             throw new \Exception('states do not match');
         }
