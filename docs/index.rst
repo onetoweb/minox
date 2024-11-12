@@ -14,8 +14,8 @@ Setup
 
 .. code-block:: php
     
-require 'vendor/autoload.php';
-
+    require 'vendor/autoload.php';
+    
     use Onetoweb\Minox\Client;
     use Onetoweb\Minox\Token;
     use Symfony\Component\HttpFoundation\Session\Session;
