@@ -142,6 +142,7 @@ Endpoint examples
 * `Supplier <supplier.rst>`_
 * `VAT <vat.rst>`_
 * `Meta <meta.rst>`_
+* `Ordering <ordering.rst>`_
 * `Other document <other_document.rst>`_
 * `Document text <document_text.rst>`_
 * `Email history <email_history.rst>`_
@@ -154,3 +155,5 @@ Endpoint examples
 * `Paragon <paragon.rst>`_
 * `Webhook <webhook.rst>`_
 
+
+`Back to top <#top>`_
