@@ -116,6 +116,7 @@ Endpoint examples
 
 * `Distance sale <distance_sale.rst>`_
 * `Accrual <accrual.rst>`_
+* `Invoice <invoice.rst>`_
 * `Payable <payable.rst>`_
 * `Receivable <receivable.rst>`_
 * `Reporting <reporting.rst>`_
