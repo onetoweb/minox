@@ -73,6 +73,11 @@ class Client
     private $throttle = true;
     
     /**
+     * @var Token
+     */
+    private $token;
+    
+    /**
      * @param int $clientNumber
      * @param string $clientId
      * @param string $clientSecret
