@@ -19,8 +19,8 @@ List customers
     $results = $client->customer->list();
 
 
-Create customer type
-````````````````````
+Create customer
+```````````````
 
 .. code-block:: php
     
@@ -196,8 +196,8 @@ Create customer type
     ]);
 
 
-Update customer type
-````````````````````
+Update customer
+```````````````
 
 .. code-block:: php
     
