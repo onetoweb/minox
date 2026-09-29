@@ -3,6 +3,7 @@
 namespace Onetoweb\Minox\Endpoint\Endpoints;
 
 use Onetoweb\Minox\Endpoint\AbstractEndpoint;
+use Onetoweb\Minox\Config\Method;
 
 /**
  * Other Document Endpoint.
@@ -27,7 +28,7 @@ class OtherDocument extends AbstractEndpoint
      */
     public function transactionLineBatch(string $batchId, string $filepath): ?array
     {
-        return $this->client->requestMultipart($this->client::METHOD_POST, "/{$this->getBasePath()}/transaction_line_batch/$batchId/blob", $filepath);
+        return $this->client->requestMultipart(Method::POST, "/{$this->getBasePath()}/transaction_line_batch/$batchId/blob", $filepath);
     }
     
     /**

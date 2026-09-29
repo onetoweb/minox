@@ -4,11 +4,13 @@ namespace Onetoweb\Minox;
 
 use Onetoweb\Minox\Endpoint\Endpoints;
 use Onetoweb\Minox\Exception\{TokenException, AuthException, AdministrationException};
+use Onetoweb\Minox\Config\{Method, Url};
 use Onetoweb\Minox\Token;
 use GuzzleHttp\Psr7\{Response, Utils};
 use GuzzleHttp\RequestOptions;
 use GuzzleHttp\Client as GuzzleCLient;
 use DateTime;
+use Closure;
 
 /**
  * Minox Api Client.
@@ -17,77 +19,56 @@ use DateTime;
 class Client
 {
     /**
-     * Base href
+     * @var int|null
      */
-    public const BASE_HREF = 'https://app.minox.nl/api/1';
-    public const AUTHORIZATION_URL = 'https://app.minox.nl/oauth/authorize';
-    public const TOKEN_URL = 'https://app.minox.nl/oauth/token';
+    private ?int $administrationId = null;
     
     /**
-     * Methods.
+     * @var int|null
      */
-    public const METHOD_GET = 'GET';
-    public const METHOD_POST = 'POST';
-    public const METHOD_PUT = 'PUT';
-    public const METHOD_PATCH = 'PATCH';
-    public const METHOD_DELETE = 'DELETE';
+    private ?int $rateLimit = null;
     
     /**
-     * @var int
+     * @var int|null
      */
-    private $clientNumber;
+    private ?int $rateLimitRemaining = null;
     
     /**
-     * @var string
+     * @var DateTime|null
      */
-    private $clientId;
-    
-    /**
-     * @var string
-     */
-    private $clientSecret;
-    
-    /**
-     * @var int
-     */
-    private $administrationId;
-    
-    /**
-     * @var int
-     */
-    private $rateLimit;
-    
-    /**
-     * @var int
-     */
-    private $rateLimitRemaining;
-    
-    /**
-     * @var DateTime
-     */
-    private $rateLimitReset;
+    private ?DateTime $rateLimitReset = null;
     
     /**
      * @var bool
      */
-    private $throttle = true;
+    private bool $throttle = true;
     
     /**
-     * @var Token
+     * @var Token|null
      */
-    private $token;
+    private ?Token $token = null;
+    
+    /**
+     * @var Closure|null
+     */
+    private ?Closure $tokenUpdateCallback = null;
     
     /**
      * @param int $clientNumber
      * @param string $clientId
      * @param string $clientSecret
      */
-    public function __construct(int $clientNumber, string $clientId, string $clientSecret)
-    {
-        $this->clientNumber = $clientNumber;
-        $this->clientId = $clientId;
-        $this->clientSecret = $clientSecret;
+    public function __construct(
         
+        #[\SensitiveParameter]
+        private int $clientNumber,
+        
+        #[\SensitiveParameter]
+        private string $clientId,
+        
+        #[\SensitiveParameter]
+        private string $clientSecret
+    ) {
         // load endpoints
         $this->loadEndpoints();
     }
@@ -105,13 +86,13 @@ class Client
     /**
      * @param string $redirectUrl
      * @param array $scope = []
-     * @param string $state = null
+     * @param string|null $state = null
      * 
      * @return string
      */
-    public function getAuthorizationUrl(string $redirectUrl, array $scope = [], string $state = null): string
+    public function getAuthorizationUrl(string $redirectUrl, array $scope = [], ?string $state = null): string
     {
-        return self::AUTHORIZATION_URL.'?'.http_build_query([
+        return Url::AUTH->value .'?'.http_build_query([
             'client_id' => $this->clientId,
             'redirect_uri' => $redirectUrl,
             'response_type' => 'code',
@@ -211,11 +192,11 @@ class Client
     }
     
     /**
-     * @param callable $tokenUpdateCallback
-     *
+     * @param Closure $tokenUpdateCallback
+     * 
      * @return void
      */
-    public function setTokenUpdateCallback(callable $tokenUpdateCallback): void
+    public function setTokenUpdateCallback(Closure $tokenUpdateCallback): void
     {
         $this->tokenUpdateCallback = $tokenUpdateCallback;
     }
@@ -227,7 +208,7 @@ class Client
      */
     public function getUrl(string $endpoint): string
     {
-        return self::BASE_HREF . '/' . ltrim($endpoint, '/');
+        return Url::BASE->value . '/' . ltrim($endpoint, '/');
     }
     
     /**
@@ -239,7 +220,7 @@ class Client
      */
     public function get(string $endpoint, array $query = [], array $headers = []): ?array
     {
-        return $this->request(self::METHOD_GET, $endpoint, [], $query, $headers);
+        return $this->request(Method::GET, $endpoint, [], $query, $headers);
     }
     
     /**
@@ -250,7 +231,7 @@ class Client
      */
     public function post(string $endpoint, array $data = [], array $headers = []): ?array
     {
-        return $this->request(self::METHOD_POST, $endpoint, $data, [], $headers);
+        return $this->request(Method::POST, $endpoint, $data, [], $headers);
     }
     
     /**
@@ -262,7 +243,7 @@ class Client
      */
     public function put(string $endpoint, array $data = [], array $query = []): ?array
     {
-        return $this->request(self::METHOD_PUT, $endpoint, $data, $query);
+        return $this->request(Method::PUT, $endpoint, $data, $query);
     }
     
     /**
@@ -273,7 +254,7 @@ class Client
      */
     public function patch(string $endpoint, array $data = []): ?array
     {
-        return $this->request(self::METHOD_PATCH, $endpoint, $data);
+        return $this->request(Method::PATCH, $endpoint, $data);
     }
     
     /**
@@ -284,7 +265,7 @@ class Client
      */
     public function delete(string $endpoint): ?array
     {
-        return $this->request(self::METHOD_DELETE, $endpoint);
+        return $this->request(Method::DELETE, $endpoint);
     }
     
     /**
@@ -337,7 +318,7 @@ class Client
         ];
         
         // make request
-        $response = (new GuzzleCLient())->post(self::TOKEN_URL, $options);
+        $response = (new GuzzleCLient())->post(Url::TOKEN->value, $options);
         
         // decode json
         $tokenArray = json_decode($response->getBody()->getContents(), true);
@@ -366,7 +347,7 @@ class Client
         ];
         
         // make request
-        $response = (new GuzzleCLient())->post(self::TOKEN_URL, $options);
+        $response = (new GuzzleCLient())->post(Url::TOKEN->value, $options);
         
         // decode json
         $tokenArray = json_decode($response->getBody()->getContents(), true);
@@ -450,14 +431,14 @@ class Client
     }
     
     /**
-     * @param string $method
+     * @param Method $method
      * @param string $endpoint
      * @param array $data = []
      * @param array $query = []
      *
      * @return array|null
      */
-    public function requestBasic(string $method, string $endpoint, array $data = [], array $query = []): ?array
+    public function requestBasic(Method $method, string $endpoint, array $data = [], array $query = []): ?array
     {
         // build options
         $options = [
@@ -475,7 +456,7 @@ class Client
         ];
         
         // make request
-        $response = (new GuzzleCLient())->request($method, $this->getUrl($endpoint), $options);
+        $response = (new GuzzleCLient())->request($method->value, $this->getUrl($endpoint), $options);
         
         // decode json
         $json = json_decode($response->getBody()->getContents(), true);
@@ -484,13 +465,13 @@ class Client
     }
     
     /**
-     * @param string $method
+     * @param Method $method
      * @param string $endpoint
      * @param string $filepath
      * 
      * @return array|null
      */
-    public function requestMultipart(string $method, string $endpoint, string $filepath): ?array
+    public function requestMultipart(Method $method, string $endpoint, string $filepath): ?array
     {
         // check token
         $this->checkToken();
@@ -529,7 +510,7 @@ class Client
     }
     
     /**
-     * @param string $method
+     * @param Method $method
      * @param string $endpoint
      * @param array $data = []
      * @param array $query = []
@@ -537,7 +518,7 @@ class Client
      * 
      * @return array|null
      */
-    public function request(string $method, string $endpoint, array $data = [], array $query = [], array $headers = []): ?array
+    public function request(Method $method, string $endpoint, array $data = [], array $query = [], array $headers = []): ?array
     {
         // check token
         $this->checkToken();
@@ -554,7 +535,7 @@ class Client
         ];
         
         // make request
-        $response = (new GuzzleCLient())->request($method, $this->getUrl($endpoint), $options);
+        $response = (new GuzzleCLient())->request($method->value, $this->getUrl($endpoint), $options);
         
         // throttle
         $this->throttle($response);

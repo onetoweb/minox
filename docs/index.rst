@@ -71,15 +71,15 @@ Setup
         // set token
         $client->setToken($token);
         
-    } elseif ($request->get('code')) {
+    } elseif ($request->query->has('code')) {
         
-        // (optional) compare states
-        if ($request->get('state') !== $session->get('state')) {
+        // compare state
+        if ($request->query->get('state') !== $session->get('state')) {
             throw new \Exception('states do not match');
         }
         
         // request token from code
-        $client->requestTokenFromCode($request->get('code'));
+        $client->requestTokenFromCode($request->query->get('code'));
         
     } else {
         

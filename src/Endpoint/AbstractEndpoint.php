@@ -10,16 +10,12 @@ use Onetoweb\Minox\Client;
 abstract class AbstractEndpoint implements EndpointInterface
 {
     /**
-     * @var Client
-     */
-    protected $client;
-    
-    /**
      * @param Client $client
      */
-    public function __construct(Client $client)
-    {
-        $this->client = $client;
+    public function __construct(
+        protected Client $client
+    ) {
+        
     }
     
     /**

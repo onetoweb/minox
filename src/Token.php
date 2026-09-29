@@ -14,11 +14,18 @@ class Token
      * @param string $refreshToken
      * @param DateTime $expires
      */
-    public function __construct(string $accessToken, string $refreshToken, DateTime $expires)
-    {
-        $this->accessToken = $accessToken;
-        $this->refreshToken = $refreshToken;
-        $this->expires = $expires;
+    public function __construct(
+        
+        #[\SensitiveParameter]
+        private string $accessToken,
+        
+        #[\SensitiveParameter]
+        private string $refreshToken,
+        
+        #[\SensitiveParameter]
+        private DateTime $expires
+    ) {
+        
     }
     
     /**

@@ -3,6 +3,7 @@
 namespace Onetoweb\Minox\Endpoint\Endpoints;
 
 use Onetoweb\Minox\Endpoint\AbstractEndpoint;
+use Onetoweb\Minox\Config\Method;
 
 /**
  * Meta Endpoint.
@@ -14,7 +15,7 @@ class Meta extends AbstractEndpoint
      */
     public function inspect(): ?array
     {
-        return $this->client->requestBasic($this->client::METHOD_POST, '/inspect', [
+        return $this->client->requestBasic(Method::POST, '/inspect', [
             'token' => (string) $this->client->getToken(),
         ]);
     }
