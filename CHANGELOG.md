@@ -24,3 +24,9 @@
  - Drop support for guzzle 6
  - Add support for guzzle 8
  - Add SensitiveParameter attributes
+
+## [2.0.1] - 2026-11-11
+
+ - Bugfix: Ordering::sendOrderDocument
+ - Add sendOrderDocument to Ordering endpoint
+ - Add dowloadFile to Client

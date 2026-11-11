@@ -3,6 +3,7 @@
 namespace Onetoweb\Minox\Endpoint\Endpoints;
 
 use Onetoweb\Minox\Endpoint\AbstractEndpoint;
+use Onetoweb\Minox\Config\DocumentType;
 
 /**
  * Ordering Endpoint.
@@ -41,12 +42,32 @@ class Ordering extends AbstractEndpoint
     
     /**
      * @param string $id
+     * @param DocumentType $type = DocumentType::PDF
      * 
      * @return array|null
      */
-    public function getOrderDocument(string $id): ?array
+    public function getOrderDocument(string $id, DocumentType $type = DocumentType::PDF): ?array
     {
-        return $this->client->get("/{$this->getBasePath()}/ordering/$id/blob");
+        return $this->client->get("/{$this->getBasePath()}/ordering/$id/blob", [
+            'output' => $type->value
+        ]);
+    }
+    
+    /**
+     * @param string $id
+     * @param DocumentType $type = DocumentType::PDF
+     *
+     * @return array|null
+     */
+    public function downloadOrderDocument(string $id, DocumentType $type = DocumentType::PDF): ?array
+    {
+        $result = $this->getOrderDocument($id, $type);
+        
+        if (!isset($result['download_url'])) {
+            return $result;
+        }
+        
+        return $this->client->dowloadFile($result['download_url']);
     }
     
     /**

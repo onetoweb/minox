@@ -47,8 +47,45 @@ Get order document
 
 .. code-block:: php
     
+    use Onetoweb\Minox\Config\DocumentType;
+    
+    $id = 'aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa';
+    
+    // optional param
+    $type = DocumentType::PDF; // or DocumentType::UBL default to DocumentType::PDF
+    
+    $results = $client->ordering->getOrderDocument($id, $type);
+
+
+Download order document
+```````````````````````
+
+.. code-block:: php
+    
+    use Onetoweb\Minox\Config\DocumentType;
+    use Onetoweb\Minox\Utils;
+    
+    $id = 'aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa';
+    
+    // optional param
+    $type = DocumentType::PDF; // or DocumentType::UBL default to DocumentType::PDF
+    
+    $results = $client->ordering->downloadOrderDocument($invoiceId, $type);
+    
+    // store file
+    $filename = "/path/to/{$results['filename']}";
+    
+    $results = Utils::saveFile($filename, $results);
+
+
+Get order document
+``````````````````
+
+.. code-block:: php
+    
     $id = 'aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa';
     $results = $client->ordering->getOrderDocument($id);
+
 
 
 Send order document

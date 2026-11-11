@@ -4,7 +4,7 @@ namespace Onetoweb\Minox;
 
 use Onetoweb\Minox\Endpoint\Endpoints;
 use Onetoweb\Minox\Exception\{TokenException, AuthException, AdministrationException};
-use Onetoweb\Minox\Config\{Method, Url};
+use Onetoweb\Minox\Config\{Method, Url, DocumentType};
 use Onetoweb\Minox\Token;
 use GuzzleHttp\Psr7\{Response, Utils};
 use GuzzleHttp\RequestOptions;
@@ -428,6 +428,52 @@ class Client
         if ($this->token->isExpired()) {
             $this->refreshToken();
         }
+    }
+    
+    /**
+     * @param string $url
+     * @param DocumentType $type = DocumentType::PDF
+     * 
+     * @return array|null
+     */
+    public function dowloadFile(string $url, DocumentType $type = DocumentType::PDF): ?array
+    {
+        // build options
+        $options = [
+            RequestOptions::HTTP_ERRORS => false,
+        ];
+        
+        // make request
+        $response = (new GuzzleCLient())->get($url, $options);
+        
+        // get filename
+        $cdHeader = 'Content-Disposition';
+        if ($response->hasHeader($cdHeader)) {
+            
+            $contentDisposition = $response->getHeaderLine($cdHeader);
+            
+            $filename = trim(str_replace('inline; filename=', '', $contentDisposition), '"');
+            
+        } else {
+            
+            switch ($type) {
+                case DocumentType::PDF;
+                    $extension = 'pdf';
+                    break;
+                case DocumentType::UBL;
+                    $extension = 'xml';
+                    break;
+            }
+            
+            $filename = "invoice.$extension";
+        }
+        
+        $contents = $response->getBody()->getContents();
+        
+        return [
+            'filename' => $filename,
+            'data' => base64_encode($contents)
+        ];
     }
     
     /**
