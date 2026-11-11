@@ -33,7 +33,66 @@ Create / update a new order document
     // store id
     
     $results = $client->ordering->save($id, [
-        @todo add order document data
+        'type' => 'invoice',
+        'memo' => 'string',
+        'vat_inclusive' => true,
+        'vat_reverse_charged' => true,
+        'invoice_date' => 'string',
+        'orderresponse_date' => 'string',
+        'quotation_date' => 'string',
+        'packinglist_date' => 'string',
+        'delivery_date' => 'string',
+        'subscription_end_date' => 'string',
+        'frequence' => 'one_week',
+        'discount_percentage' => 0,
+        'payment_term_id' => 0,
+        'delivery_term_id' => 0,
+        'carrier_id' => 0,
+        'representative_id' => 0,
+        'region_id' => 0,
+        'customer_type_id' => 0,
+        'currency_id' => 'string',
+        'is_g_account' => true,
+        'mandate_date' => 'string',
+        'customer' => [
+            'id' => 0,
+            'name' => 'string',
+            'contact_name' => 'string',
+            'salutation' => 'string',
+            'streetname_and_number' => 'string',
+            'postal_code' => 'string',
+            'city' => 'string',
+            'country_code' => 'string'
+        ],
+        'delivery_address' => [
+            'nr' => 0,
+            'is_one_time' => true,
+            'name' => 'string',
+            'contact_name' => 'string',
+            'extended_name' => 'string',
+            'streetname_and_number' => 'string',
+            'postal_code' => 'string',
+            'city' => 'string',
+            'country_code' => 'string'
+        ],
+        'reference' => 'string',
+        'lines' => [
+            [
+                'item_id' => 'string',
+                'vat_id' => 0,
+                'price' => 0,
+                'cost_center_id' => 999999999999999,
+                'date' => 'string',
+                'description' => 'string',
+                'quantity' => 0,
+                'delivery_quantity' => 0,
+                'price_per_quantity' => 0,
+                'discount_percentage' => 0,
+                'discountable_amount' => 0,
+                'amount' => 0,
+                'content' => 0
+            ]
+        ]
     ]);
 
 
