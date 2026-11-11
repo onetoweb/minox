@@ -25,8 +25,12 @@ Create / update a new order document
 
 .. code-block:: php
     
+    use Onetoweb\Minox\Utils;
+    
     // generate a uuid4 when creating a new order document or use an existing order document id to update
     $id = Utils::uuid4();
+    
+    // store id
     
     $results = $client->ordering->save($id, [
         @todo add order document data
