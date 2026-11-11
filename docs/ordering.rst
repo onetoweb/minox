@@ -30,8 +30,9 @@ Create / update a new order document
     // generate a uuid4 when creating a new order document or use an existing order document id to update
     $id = Utils::uuid4();
     
-    // store id
+    // store id in your system for future reference
     
+    // create invoice
     $results = $client->ordering->save($id, [
         'type' => 'invoice',
         'memo' => 'string',
