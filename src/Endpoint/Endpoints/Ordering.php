@@ -57,7 +57,7 @@ class Ordering extends AbstractEndpoint
      */
     public function sendOrderDocument(string $id, array $data): ?array
     {
-        return $this->client->gpostet("/{$this->getBasePath()}/ordering/$id/send", $data);
+        return $this->client->post("/{$this->getBasePath()}/ordering/$id/send", $data);
     }
     
     /**
